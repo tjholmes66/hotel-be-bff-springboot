@@ -1,0 +1,15 @@
+auth {
+  mode: oauth2
+}
+
+auth:oauth2 {
+  grant_type: authorization_code
+  callback_url: http://127.0.0.1:1195/callback
+  authorization_url: http://127.0.0.1:9000/realms/hotel_realm/protocol/openid-connect/auth
+  access_token_url: http://127.0.0.1:9000/realms/hotel_realm/protocol/openid-connect/token
+  client_id: hotel_client
+  client_secret: 
+  scope: openid profile email
+  state: 
+  pkce: false
+}

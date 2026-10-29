@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Management System &ndash; BFF (Spring Boot)</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      color: #222;
+    }
+    h1 { border-bottom: 2px solid #444; padding-bottom: .3rem; }
+    h2 { margin-top: 1.8rem; }
+    ul { padding-left: 1.4rem; }
+    code { background: #f2f2f2; padding: .1rem .35rem; border-radius: 3px; }
+    footer { margin-top: 3rem; font-size: .9rem; color: #666; }
+  </style>
+</head>
+<body>
+  <h1>Hotel Management System &mdash; BFF</h1>
+
+  <p>
+    This is the opening project of a <strong>Hotel Management System</strong>.
+    This repository contains the <strong>BFF</strong> (Backend-For-Frontend),
+    written in Java and Spring Boot.
+  </p>
+
+  <h2>Architecture</h2>
+  <p>
+    The system is composed of independently deployable frontends and a set of
+    domain-driven microservices:
+  </p>
+  <ul>
+    <li>
+      <strong>Frontends</strong> &mdash; separate applications capable of being
+      deployed on their own, written in
+      <a href="https://github.com/tjholmes66/hotel-ui-angular">Angular</a>
+      and/or React.
+    </li>
+    <li>
+      <strong>Microservices</strong> (domain-driven design):
+      <code>housekeeping</code>, <code>frontdesk</code>, <code>kitchen</code>,
+      <code>maintenance</code>.
+    </li>
+  </ul>
+
+  <h2>Technology Stack</h2>
+  <ul>
+    <li><strong>Communication:</strong> Apache Kafka between services.</li>
+    <li><strong>Authentication:</strong> Keycloak, running in a Docker container.</li>
+    <li><strong>Database:</strong> MySQL Server in its own schema, already in a Docker container.</li>
+    <li><strong>Runtime:</strong> all parts reside in Docker containers, with Kubernetes used to allow the services to be discovered.</li>
+    <li><strong>Database migrations:</strong> Flyway, shared across each microservice.</li>
+  </ul>
+
+  <h2>Documentation</h2>
+  <p>
+    There will be a Blog within GitHub to document the creation of this whole
+    system.
+  </p>
+
+  <footer>
+    <p>hotel-be-bff-springboot &mdash; Hotel Management System BFF</p>
+  </footer>
+</body>
+</html>
