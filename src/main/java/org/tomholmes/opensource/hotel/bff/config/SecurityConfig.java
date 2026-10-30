@@ -3,6 +3,7 @@ package org.tomholmes.opensource.hotel.bff.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -14,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -70,7 +72,11 @@ public class SecurityConfig
                         .defaultSuccessUrl(uiBaseUrl, true)
                         .failureUrl(uiLoginUrl + "?error"))
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
+                        // Allow a full-page GET /logout navigation from the Angular UI
+                        // while retaining the existing POST /logout behaviour.
+                        .logoutRequestMatcher(new OrRequestMatcher(
+                                PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/logout"),
+                                PathPatternRequestMatcher.pathPattern(HttpMethod.POST, "/logout")))
                         .logoutSuccessHandler(oidcLogoutSuccessHandler())
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)

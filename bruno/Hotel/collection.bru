@@ -1,15 +1,33 @@
-auth {
-  mode: oauth2
+headers {
+  Cookie: JSESSIONID=379521BF9D5292F2797219DA80EECE6C
 }
 
-auth:oauth2 {
-  grant_type: authorization_code
-  callback_url: http://127.0.0.1:1195/callback
-  authorization_url: http://127.0.0.1:9000/realms/hotel_realm/protocol/openid-connect/auth
-  access_token_url: http://127.0.0.1:9000/realms/hotel_realm/protocol/openid-connect/token
-  client_id: hotel_client
-  client_secret: 
-  scope: openid profile email
-  state: 
-  pkce: false
+script:pre-request {
+  const axios = require("axios");
+  
+  // Example of how to perform an async request in Bruno
+  async function loginToKeycloak() {
+    try {
+      const response = await axios.post("http://localhost:9000/realms/hotel_realm/protocol/openid-connect/token", 
+        new URLSearchParams({
+          grant_type: 'password',
+          client_id: 'hotel_client',
+          username: 'tom@tomholmes.net',
+          password: 'passw0rd'
+        }), {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }
+      );
+      
+      // Set environment variable in Bruno
+      bru.setEnvVar("keycloak_token", response.data.access_token);
+    } catch (error) {
+      console.error("Request failed", error);
+    }
+  }
+  
+  // Invoke the async function
+  loginToKeycloak();
+  
+  
 }
