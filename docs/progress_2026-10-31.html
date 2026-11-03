@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>progress Report on October 31st, 2026</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            color: #222;
+        }
+        h1 { border-bottom: 2px solid #444; padding-bottom: .3rem; }
+        h2 { margin-top: 1.8rem; }
+        ul { padding-left: 1.4rem; }
+        code { background: #f2f2f2; padding: .1rem .35rem; border-radius: 3px; }
+        footer { margin-top: 3rem; font-size: .9rem; color: #666; }
+    </style>
+</head>
+
+<body>
+
+<h1>October 31st, 2026 - Happy Halloween</h1>
+
+<h2>Introduction</h2>
+
+<p>
+    First and foremost, Happy Halloween to everybody!
+    I hope everyone has a fun, safe, and happy halloween to all following this blog.
+    If no one else us watching this, at least it's a personal diary on my progress.
+    <br/><br/>
+    If anything, these HTML pages should show my rudimentary knowledge of HTML, and I haven't gone to AI to create these yet.
+    It's a little hard to do that since I don't even know what I want to say yet.
+    <br/><br/>
+    As far as my progress goes, a lot of progress has been made!
+    <br/><br/>
+    This project is meant to keep coding and knowledge of Microservices, Java 21, SpringBoot, Kafka, Angular, and AI fresh in my head!
+</p>
+
+<h2>Backend-for-Frontend (BFF) SpringBoot Application</h2>
+
+<p>
+    The actual BFF backend has been created and is working.   All the unit tests are working, and the app runs fine.
+    <br/>
+    Login and Logout work perfectly, and all the API's I want to secure are secured!
+</p>
+
+<h2>Security Considerations</h2>
+
+<h3>Overview of Security</h3>
+
+<p>
+    This BFF is using Oauth2 Client as followed the BFF (back-end for front-end) security pattern.
+
+    As you know, this follows that this BFFis tightly tied to the Authentication tool, and in this case it's KeyCloak.
+    I saw KeyCloak in multiple job descriptions, and I wanted to know more about this tool.
+
+    In building multiple apps over the years, it is important to have security in mind from the start, and I
+    did NOT want any responsibility for saving/storing/encrypting username and passwords in my own app or database.
+
+    For that reason, we use keycloak.   However, for development purposes, at this time, Keycloak is using it's built in memory H2 database
+    rather than the preferred PostgreSQL database.
+</p>
+
+<h3>Keycloak Configuration</h3>
+
+<p>
+    As you may, or may not, know KeyCloak is a new tool for me.   I have used LDAP, Auth0, Okta, Social Media Logins, and
+    Forgerock OpenAM for authentication tools.   Within KeyCloak, we created a realm, then we created the client.
+    The "client" had to be configured for this application in regards to the web origin, the callback url, and the logout urls.
+    Also, we wanted to create particular roles/groups for this which had to be configured to add to our token.  A new field,
+    Phone Number is also added and is required.   These were all minor changes in Keycloak for this application.
+</p>
+
+<h3>Security Workflow</h3>
+
+<p>
+    This is nothing new, and is a process I knew for some time, and that is the Oauth2 client pattern.
+    So, from the UI page, it points back to the BFF app which then calls Keycloak.   The username/password credentials
+    into Keycloak which takes away that responsibility from our application.  We do not store usersnames/passwords encrypted,
+    hashed, or otherwise into our database.  We do have a User table, but we do not store passwords.   That is the purview
+    of Keycloak, or any other authentication tool we might use in the future.   Once a user is authenticated, then
+    Keycloak sends a code to the BFF where an exchange takes place for token and the User is stored in the session within the BFF.
+    That's right, the BFF is NOT stateless at this time, and won't be, BUT the Microservices will be!   Also, at this time
+    a JSESSIONID cookie is created on the UI, so the UI no longer has to worry about tokens.  This is as secure as secure can
+    get, and follows a very normal pattern.
+</p>
+
+<h3>Other Security Considerations</h3>
+
+<p>
+    We also made sure our SpringBoot Security Config is set correctly to make sure all API's are secured.
+    Login and Logout are properly setup to the correct url.   CORS and CSRF issues are also taken into consideration.
+</p>
+
+<h2>Front-End Angular App</h2>
+
+<h3>Front-end Overview</h3>
+
+<p>
+    Also now working is the, Angular App.
+    I started the Angular App the UI within IntelliJ IDEA since I am paying for it.
+    As it is an Angular app. amd not React at this time, all the code is in TypeScript.
+    I also have WebStorm Community Edition (CE), and it would have worked just as well as this did.
+  </p>
+
+<h3>Two UI's for the Price of One</h3>
+
+<p>
+    Once I got the framework started, and commited into a GitHub Repository, then I was able to start making
+    changes.   I got started with splitting the App into two distinct UI's, but within this same MonoRepo.
+    There is a GUEST Portal and a STAFF Portal.   A user with KeyCloak has to authenticate.   A User is
+    assign Groups, and there is one Group for GUEST and several for Hotel Staff.   Once a User is authenticated
+    against KeyCloak, the UI is able to make a call to the /api/v1/me REST API (Controller), get the users information
+    and with a list of groups/roles/authorities, then we are able to use typescript to build the menus we want for the UI.
+</p>
+
+<h3>Front-end Layout</h3>
+
+<p>
+    The layout that we have for both the Guest and Staff Portal is the same, and it is a traditional view.
+    We have a Header, we have a Footer, we have a Left-Side Menu that is controlled by the User Groups, and
+    we have a main content area.
+</p>
+
+<h2>AI Usage</h2>
+
+<h3>Overview</h3>
+
+<p>
+    GitHub CoPilot has a cost associated with reviewing code, so we are not using that at all.
+    I tried using Claude Code, but found I did not like the cost associated with it either.
+    I switched about 2 months ago to OpenCode, and when OpenCode went through an update, it was using
+    'Big Pickle' as it's LLM which I found to work fine.  I don't use AI every day, or every time I am coding
+    as I am very much old school and like to code things by hand sometimes.
+    <br/><br/>
+    For years, I have used Google Searches, StackOverflow, Baeldung, and other sites to research how code
+    should look/work and often times cutting and pasting helped me to understand how the language and code
+    works.
+</p>
+
+<h3>AI SpringBoot BFF</h3>
+
+<p>
+    I was using it for Code Completion, boilerplate code, unit and integration tests, and documentation.
+    I found AI to be really useful.   Java code for Hibernate Entities, Repositories, Business Services,
+    and Controllers all follow a basic pattern for CRUD behavior.   All the code was reviewed by myself
+    before committing it to GitHub.   The only problem I found was that the code wasn't formatted the way
+    I wanted and therefore, I had to reformat some code, and that was fairly easy with intelliJ.  Since,
+    I know what the back-end code is supposed to look like since I have done it manually for so many years,
+    it easy to review the code.
+</p>
+
+<h3>AI Angular UI</h3>
+
+<p>
+    For the last 18 years, I have been mainly a back-end developer working on API's and integration
+    with third-party API's and other internal microservices.   It hasn't been since TechTarget (2006-2008)
+    that I have done any real HTML, CSS, and Javascript.   Back when I was working at AGMednet, I
+    was learning Angular 1 when it came out and it was very new.   Unfortunately, Google changed
+    Angular 1 and version 2.0 was much, much different than Angular 1.0, so I had to start all over again.
+    I know that Angular is a full UI framework capable of a lot, and it primarily Typescript which is good.
+    I am learning Angular again, which is now up to version 19.   I <b>ABSOLUTELY</b> want to learn Angular
+    again, so I can read the code and know exactly what is going on.   BUT, in order to expedite the building
+    of this UI, I have resorted to letting OpenCode AI vibe-code this.   My goal is to still be able to
+    read through that code, and understand if we are building the UI the same way a manual UI developer would
+    do it.    I find this to be very important, as I want to be able to create more Angular UI's for other
+    back-end applications that I have created.
+</p>
+
+<h3>Other AI Considerations</h3>
+
+<p>
+    AI is far from perfect!  I know it is non-deterministic.  I know that AI is not good at fixing
+    existing code.  I know I review code, check the tests myself, and then determine if the code is
+    good enough to commit to GitHub.   I am usually pretty happy with the basic boilerplate code is
+    written for the backend, and that is because I understand it more and know how I would write the
+    code manually myself.    With the UI code, I have made some big assumptions that it can do what I
+    want if I am really explicit in the prompts.   I am not a UI developer, or  creative person, I know
+    HTML, but nowhere near an expert on CSS or Design.   I can't do a color-palette and making buttons
+    with soft-round edges is not my thing.   Any UI I develop just has to be functional, NOT pretty.
+    All my AI work has been with prompting.   I have not yet created any MCP Client or Servers, and I
+    have not yet created any new Agents or used any Agents, yet!   This project is also meant to
+    help me use and understand AI better.
+</p>
+
+</body>
+</html>
