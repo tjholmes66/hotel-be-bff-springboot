@@ -14,14 +14,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.tomholmes.opensource.hotel.bff.model.GuestEntity;
-import org.tomholmes.opensource.hotel.bff.model.RoomEntity;
-import org.tomholmes.opensource.hotel.bff.repository.BedTypeRepository;
 import org.tomholmes.opensource.hotel.bff.repository.GuestRepository;
+import org.tomholmes.opensource.hotel.bff.repository.RateRepository;
 import org.tomholmes.opensource.hotel.bff.repository.ReservationStatusRepository;
-import org.tomholmes.opensource.hotel.bff.repository.RoomRepository;
-import org.tomholmes.opensource.hotel.bff.repository.RoomStatusRepository;
-
-import java.time.LocalDateTime;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
@@ -44,13 +39,7 @@ public class ReservationControllerTest
     private GuestRepository guestRepository;
 
     @Autowired
-    private RoomRepository roomRepository;
-
-    @Autowired
-    private BedTypeRepository bedTypeRepository;
-
-    @Autowired
-    private RoomStatusRepository roomStatusRepository;
+    private RateRepository rateRepository;
 
     @Autowired
     private ReservationStatusRepository  reservationStatusRepository;
@@ -59,7 +48,7 @@ public class ReservationControllerTest
 
     private Long guestId;
 
-    private Long roomId;
+    private Long rateId;
 
     private Long statusId;
 
@@ -76,8 +65,6 @@ public class ReservationControllerTest
         .authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
         .build();
 
-        LocalDateTime now = LocalDateTime.now();
-
         GuestEntity guest = new GuestEntity();
         guest.setFirstName("Reservation");
         guest.setLastName("Guest");
@@ -87,20 +74,7 @@ public class ReservationControllerTest
 
         this.statusId = reservationStatusRepository.findById(1L).orElseThrow().getId();
 
-        RoomEntity room = new RoomEntity();
-        room.setId(1L);
-        room.setRoomNumber(9001);
-        room.setRoomName("Reservation Test Room");
-        room.setRoomDescription("Room for reservation controller test");
-        room.setOccupants(2);
-        room.setFloor(9);
-        room.setCreatedBy(1L);
-        room.setCreatedDate(now);
-        room.setUpdatedBy(1L);
-        room.setUdpatedDate(now);
-        room.setBedType(bedTypeRepository.findById(1L).orElseThrow());
-        room.setRoomStatus(roomStatusRepository.findByRoomStatusCode("AVAILABLE").orElseThrow());
-        this.roomId = roomRepository.saveAndFlush(room).getId();
+        this.rateId = rateRepository.findById(1L).orElseThrow().getId();
     }
 
     @Test
@@ -125,7 +99,7 @@ public class ReservationControllerTest
     public void testGetReservationByReservationNumber() throws Exception
     {
 
-        String reservationNumber = "JHFDU346";
+        String reservationNumber = "ABCDE-12345";
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get(BASE_URL + "/reservationNumber/" + reservationNumber);
         this.mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isOk());
     }
@@ -163,14 +137,14 @@ public class ReservationControllerTest
         String json = """
                 {
                     "primaryGuestId": %d,
-                    "roomId": %d,
+                    "rateId": %d,
                     "statusId": %d,
                     "checkinDate": "2027-01-01T15:00:00",
                     "checkoutDate": "2027-01-03T11:00:00",
                     "numberAdults": 2,
                     "numberChildren": 0
                 }
-                """.formatted(guestId, roomId, statusId);
+                """.formatted(guestId, rateId, statusId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json);
@@ -184,14 +158,14 @@ public class ReservationControllerTest
         String json = """
                 {
                     "primaryGuestId": %d,
-                    "roomId": %d,
+                    "rateId": %d,
                     "statusId": %d,
                     "checkinDate": "2027-01-01T15:00:00",
                     "checkoutDate": "2027-01-03T11:00:00",
                     "numberAdults": 2,
                     "numberChildren": 0
                 }
-                """.formatted(guestId, roomId, statusId);
+                """.formatted(guestId, rateId, statusId);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(BASE_URL)
         .with(oidcLogin().idToken(t -> t
         .subject("3c42807f-f1ac-4baa-9e02-444523b2cfeb")
@@ -229,14 +203,14 @@ public class ReservationControllerTest
         String json = """
                 {
                     "primaryGuestId": %d,
-                    "roomId": %d,
+                    "rateId": %d,
                     "statusId": %d,
                     "checkinDate": "2027-02-01T15:00:00",
                     "checkoutDate": "2027-02-03T11:00:00",
                     "numberAdults": 2,
                     "numberChildren": 0
                 }
-                """.formatted(guestId, roomId, statusId);
+                """.formatted(guestId, rateId, statusId);
         String response = this.mockMvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))

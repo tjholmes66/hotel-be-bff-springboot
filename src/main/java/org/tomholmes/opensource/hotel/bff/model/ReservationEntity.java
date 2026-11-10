@@ -19,7 +19,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "reservations", uniqueConstraints = {
-@UniqueConstraint(name = "uq_guest_room_date", columnNames = { "primary_guest", "room_id", "checkin_date" }) })
+@UniqueConstraint(name = "uq_guest_room_date", columnNames = { "primary_guest_id", "rate_id", "checkin_date" }) })
 @DynamicInsert
 public class ReservationEntity implements Serializable
 {
@@ -34,8 +34,8 @@ public class ReservationEntity implements Serializable
     private GuestEntity primaryGuest;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id", nullable = false)
-    private RoomEntity room;
+    @JoinColumn(name = "rate_id", nullable = false)
+    private RateEntity rate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_status_id", nullable = false)
@@ -74,6 +74,16 @@ public class ReservationEntity implements Serializable
     @Column(name = "actual_checkout_by")
     private Long actualCheckoutBy;
 
+    public Integer getNumberChildren()
+    {
+        return numberChildren;
+    }
+
+    public void setNumberChildren(Integer numberChildren)
+    {
+        this.numberChildren = numberChildren;
+    }
+
     public Long getId()
     {
         return id;
@@ -94,14 +104,24 @@ public class ReservationEntity implements Serializable
         this.primaryGuest = primaryGuest;
     }
 
-    public RoomEntity getRoom()
+    public RateEntity getRate()
     {
-        return room;
+        return rate;
     }
 
-    public void setRoom(RoomEntity room)
+    public void setRate(RateEntity rate)
     {
-        this.room = room;
+        this.rate = rate;
+    }
+
+    public ReservationStatusEntity getReservationStatus()
+    {
+        return reservationStatus;
+    }
+
+    public void setReservationStatus(ReservationStatusEntity reservationStatus)
+    {
+        this.reservationStatus = reservationStatus;
     }
 
     public LocalDate getCheckinDate()
@@ -134,14 +154,14 @@ public class ReservationEntity implements Serializable
         this.numberAdults = numberAdults;
     }
 
-    public Integer getNumberChildren()
+    public String getReservationNumber()
     {
-        return numberChildren;
+        return reservationNumber;
     }
 
-    public void setNumberChildren(Integer numberChildren)
+    public void setReservationNumber(String reservationNumber)
     {
-        this.numberChildren = numberChildren;
+        this.reservationNumber = reservationNumber;
     }
 
     public LocalDateTime getCreatedDate()
@@ -164,16 +184,6 @@ public class ReservationEntity implements Serializable
         this.updatedDate = updatedDate;
     }
 
-    public String getReservationNumber()
-    {
-        return reservationNumber;
-    }
-
-    public void setReservationNumber(String reservationNumber)
-    {
-        this.reservationNumber = reservationNumber;
-    }
-
     public LocalDateTime getActualCheckin()
     {
         return actualCheckin;
@@ -184,26 +194,6 @@ public class ReservationEntity implements Serializable
         this.actualCheckin = actualCheckin;
     }
 
-    public LocalDateTime getActualCheckout()
-    {
-        return actualCheckout;
-    }
-
-    public void setActualCheckout(LocalDateTime actualCheckout)
-    {
-        this.actualCheckout = actualCheckout;
-    }
-
-    public ReservationStatusEntity getReservationStatus()
-    {
-        return reservationStatus;
-    }
-
-    public void setReservationStatus(ReservationStatusEntity reservationStatus)
-    {
-        this.reservationStatus = reservationStatus;
-    }
-
     public Long getActualCheckinBy()
     {
         return actualCheckinBy;
@@ -212,6 +202,16 @@ public class ReservationEntity implements Serializable
     public void setActualCheckinBy(Long actualCheckinBy)
     {
         this.actualCheckinBy = actualCheckinBy;
+    }
+
+    public LocalDateTime getActualCheckout()
+    {
+        return actualCheckout;
+    }
+
+    public void setActualCheckout(LocalDateTime actualCheckout)
+    {
+        this.actualCheckout = actualCheckout;
     }
 
     public Long getActualCheckoutBy()
@@ -230,7 +230,7 @@ public class ReservationEntity implements Serializable
         if (o == null || getClass() != o.getClass())
             return false;
         ReservationEntity that = (ReservationEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(primaryGuest, that.primaryGuest) && Objects.equals(room, that.room) && Objects.equals(reservationStatus,
+        return Objects.equals(id, that.id) && Objects.equals(primaryGuest, that.primaryGuest) && Objects.equals(rate, that.rate) && Objects.equals(reservationStatus,
         that.reservationStatus) && Objects.equals(checkinDate, that.checkinDate) && Objects.equals(checkoutDate, that.checkoutDate) && Objects.equals(numberAdults,
         that.numberAdults) && Objects.equals(numberChildren, that.numberChildren) && Objects.equals(reservationNumber, that.reservationNumber) && Objects.equals(createdDate,
         that.createdDate) && Objects.equals(updatedDate, that.updatedDate) && Objects.equals(actualCheckin, that.actualCheckin) && Objects.equals(actualCheckinBy,
@@ -240,13 +240,13 @@ public class ReservationEntity implements Serializable
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, primaryGuest, room, reservationStatus, checkinDate, checkoutDate, numberAdults, numberChildren, reservationNumber, createdDate, updatedDate, actualCheckin,
+        return Objects.hash(id, primaryGuest, rate, reservationStatus, checkinDate, checkoutDate, numberAdults, numberChildren, reservationNumber, createdDate, updatedDate, actualCheckin,
         actualCheckinBy, actualCheckout, actualCheckoutBy);
     }
 
     @Override
     public String toString()
     {
-        return "ReservationEntity{" + "id=" + id + ", primaryGuest=" + primaryGuest + ", room=" + room + ", reservationStatus=" + reservationStatus + ", checkinDate=" + checkinDate + ", checkoutDate=" + checkoutDate + ", numberAdults=" + numberAdults + ", numberChildren=" + numberChildren + ", reservationNumber='" + reservationNumber + '\'' + ", createdDate=" + createdDate + ", updatedDate=" + updatedDate + ", actualCheckin=" + actualCheckin + ", actualCheckinBy=" + actualCheckinBy + ", actualCheckout=" + actualCheckout + ", actualCheckoutBy=" + actualCheckoutBy + '}';
+        return "ReservationEntity{" + "id=" + id + ", primaryGuest=" + primaryGuest + ", rate=" + rate + ", reservationStatus=" + reservationStatus + ", checkinDate=" + checkinDate + ", checkoutDate=" + checkoutDate + ", numberAdults=" + numberAdults + ", numberChildren=" + numberChildren + ", reservationNumber='" + reservationNumber + '\'' + ", createdDate=" + createdDate + ", updatedDate=" + updatedDate + ", actualCheckin=" + actualCheckin + ", actualCheckinBy=" + actualCheckinBy + ", actualCheckout=" + actualCheckout + ", actualCheckoutBy=" + actualCheckoutBy + '}';
     }
 }

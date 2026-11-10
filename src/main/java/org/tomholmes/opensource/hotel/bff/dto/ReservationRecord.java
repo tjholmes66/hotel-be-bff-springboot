@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public record ReservationRecord(
 Long id,
 Long primaryGuestId,
-Long roomId,
+Long rateId,
 LocalDate checkinDate,
 LocalDate checkoutDate,
 Integer numberAdults,

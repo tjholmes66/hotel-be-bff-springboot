@@ -16,9 +16,9 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
 
     List<ReservationEntity> findByPrimaryGuestId(Long guestId);
 
-    List<ReservationEntity> findByRoomId(Long roomId);
+    List<ReservationEntity> findByRate_Room_Id(Long roomId);
 
-    Optional<ReservationEntity> findByPrimaryGuest_IdAndRoom_IdAndCheckinDate(Long guestId, Long roomId,
+    Optional<ReservationEntity> findByPrimaryGuest_IdAndRate_Room_IdAndCheckinDate(Long guestId, Long roomId,
                                                                        LocalDate checkinDate);
 
     List<ReservationEntity> findByPrimaryGuestIdAndCheckinDate(Long guestId, LocalDate checkinDate);
@@ -29,7 +29,7 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query(
-    "SELECT r FROM ReservationEntity r WHERE r.room.id = :roomId AND " +
+    "SELECT r FROM ReservationEntity r WHERE r.rate.room.id = :roomId AND " +
     "r.reservationStatus.statusCode != 'CANCELLED' " +
     "AND r.checkinDate < :checkOutDate " +
     "AND r.checkoutDate > :checkInDate")

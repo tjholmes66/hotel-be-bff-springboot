@@ -1,11 +1,12 @@
 hotel-be-bff-springboot - https://github.com/tjholmes66/hotel-be-bff-springboot
 hotel-ui-angular - https://github.com/tjholmes66/hotel-ui-angular
 hotel-ui-react
-hotel-ms-housekeeping-springboot
-hotel-ms-frontdesk-springboot
-hotel-ms-kitchen-springboot
-hotel-ms-housekeeping-springboot
-hotel-ms-maintenance-springboot
+hotel-be-ms-housekeeping-springboot
+hotel-be-ms-frontdesk-springboot
+hotel-be-ms-kitchen-springboot
+hotel-be-ms-housekeeping-springboot
+hotel-be-ms-maintenance-springboot
+hotel-be-ms-payment-springboot
 
 This is the opening project of a Hotel Management System.
 

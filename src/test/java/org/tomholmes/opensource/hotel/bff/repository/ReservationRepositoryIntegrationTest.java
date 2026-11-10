@@ -7,9 +7,9 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.tomholmes.opensource.hotel.bff.model.GuestEntity;
+import org.tomholmes.opensource.hotel.bff.model.RateEntity;
 import org.tomholmes.opensource.hotel.bff.model.ReservationEntity;
 import org.tomholmes.opensource.hotel.bff.model.ReservationStatusEntity;
-import org.tomholmes.opensource.hotel.bff.model.RoomEntity;
 import org.tomholmes.opensource.hotel.bff.utils.HotelUtils;
 
 import java.time.LocalDate;
@@ -33,13 +33,14 @@ class ReservationRepositoryIntegrationTest {
     private static final Long RESERVATION_ID = 1L;
     private static final Long GUEST_ID = 1L;
     private static final Long OTHER_GUEST_ID = 2L;
+    private static final Long RATE_ID = 1L;
     private static final Long ROOM_ID = 1L;
     private static final Long OTHER_ROOM_ID = 2L;
     private static final Long STATUS_ID = 1L;
     private static final Long OTHER_STATUS_ID = 2L;
-    private static final String RESERVATION_NUMBER = "JHFDU346";
-    private static final LocalDate CHECKIN = LocalDate.of(2026, 11, 3);
-    private static final LocalDate CHECKOUT = LocalDate.of(2026, 11, 6);
+    private static final String RESERVATION_NUMBER = "ABCDE-12345";
+    private static final LocalDate CHECKIN = LocalDate.of(2026, 11, 13);
+    private static final LocalDate CHECKOUT = LocalDate.of(2026, 11, 15);
     private static final LocalDate NEW_CHECKIN = LocalDate.of(2026, 12, 1);
     private static final LocalDate NEW_CHECKOUT = LocalDate.of(2026, 12, 5);
 
@@ -50,7 +51,7 @@ class ReservationRepositoryIntegrationTest {
     private GuestRepository guestRepository;
 
     @Autowired
-    private RoomRepository roomRepository;
+    private RateRepository rateRepository;
 
     @Autowired
     private ReservationStatusRepository reservationStatusRepository;
@@ -63,9 +64,9 @@ class ReservationRepositoryIntegrationTest {
         return guestRepository.findById(GUEST_ID).orElseThrow();
     }
 
-    private RoomEntity room()
+    private RateEntity rate()
     {
-        return roomRepository.findById(ROOM_ID).orElseThrow();
+        return rateRepository.findById(RATE_ID).orElseThrow();
     }
 
     private ReservationStatusEntity status()
@@ -76,7 +77,7 @@ class ReservationRepositoryIntegrationTest {
     private ReservationEntity reservation(LocalDate checkin, LocalDate checkout) {
         ReservationEntity reservation = new ReservationEntity();
         reservation.setPrimaryGuest(guest());
-        reservation.setRoom(room());
+        reservation.setRate(rate());
         reservation.setCheckinDate(checkin);
         reservation.setCheckoutDate(checkout);
         reservation.setNumberAdults(2);
@@ -113,7 +114,7 @@ class ReservationRepositoryIntegrationTest {
         reservationRepository.saveAndFlush(reservation);
         assertNotNull(reservation);
 
-        Long roomId = reservation.getRoom().getId();
+        Long roomId = reservation.getRate().getRoom().getId();
         LocalDate checkInDate =  LocalDate.of(2026, 10, 4);
         LocalDate checkOutDate = LocalDate.of(2026, 10, 7);
         List<ReservationEntity> list = reservationRepository.findOverlappingReservations(roomId, checkInDate, checkOutDate);
@@ -137,8 +138,8 @@ class ReservationRepositoryIntegrationTest {
         assertThat(reservation.getPrimaryGuest().getFirstName()).isEqualTo("Tom");
         assertThat(reservation.getPrimaryGuest().getLastName()).isEqualTo("Holmes");
         assertThat(reservation.getPrimaryGuest().getGuestEmail()).isEqualTo("tom@tomholmes.net");
-        assertThat(reservation.getRoom().getRoomNumber()).isEqualTo(101);
-        assertThat(reservation.getRoom().getFloor()).isEqualTo(1);
+        assertThat(reservation.getRate().getRoom().getRoomNumber()).isEqualTo(101);
+        assertThat(reservation.getRate().getRoom().getFloor()).isEqualTo(1);
         assertThat(reservation.getCheckinDate()).isEqualTo(CHECKIN);
         assertThat(reservation.getCheckoutDate()).isEqualTo(CHECKOUT);
         assertThat(reservation.getNumberAdults()).isEqualTo(2);
@@ -174,29 +175,29 @@ class ReservationRepositoryIntegrationTest {
     }
 
     @Test
-    void findByRoomId_returnsReservationsForRoom() {
-        List<ReservationEntity> reservations = reservationRepository.findByRoomId(ROOM_ID);
+    void findByRate_Room_Id_returnsReservationsForRoom() {
+        List<ReservationEntity> reservations = reservationRepository.findByRate_Room_Id(ROOM_ID);
 
         assertThat(reservations).hasSize(1);
         assertThat(reservations).extracting(ReservationEntity::getReservationNumber).containsExactly(RESERVATION_NUMBER);
     }
 
     @Test
-    void findByRoomId_returnsEmptyForRoomWithoutReservations() {
-        assertThat(reservationRepository.findByRoomId(OTHER_ROOM_ID)).isEmpty();
+    void findByRate_Room_Id_returnsEmptyForRoomWithoutReservations() {
+        assertThat(reservationRepository.findByRate_Room_Id(OTHER_ROOM_ID)).isEmpty();
     }
 
     @Test
-    void findByPrimaryGuest_IdAndRoom_IdAndCheckinDate_returnsMatchingReservation() {
-        assertThat(reservationRepository.findByPrimaryGuest_IdAndRoom_IdAndCheckinDate(GUEST_ID, ROOM_ID, CHECKIN))
+    void findByPrimaryGuest_IdAndRate_Room_IdAndCheckinDate_returnsMatchingReservation() {
+        assertThat(reservationRepository.findByPrimaryGuest_IdAndRate_Room_IdAndCheckinDate(GUEST_ID, ROOM_ID, CHECKIN))
                 .hasValueSatisfying(reservation -> assertThat(reservation.getId()).isEqualTo(RESERVATION_ID));
     }
 
     @Test
-    void findByPrimaryGuest_IdAndRoom_IdAndCheckinDate_returnsEmptyWhenNothingMatches() {
-        assertThat(reservationRepository.findByPrimaryGuest_IdAndRoom_IdAndCheckinDate(GUEST_ID, ROOM_ID, CHECKOUT)).isEmpty();
-        assertThat(reservationRepository.findByPrimaryGuest_IdAndRoom_IdAndCheckinDate(GUEST_ID, OTHER_ROOM_ID, CHECKIN)).isEmpty();
-        assertThat(reservationRepository.findByPrimaryGuest_IdAndRoom_IdAndCheckinDate(OTHER_GUEST_ID, ROOM_ID, CHECKIN)).isEmpty();
+    void findByPrimaryGuest_IdAndRate_Room_IdAndCheckinDate_returnsEmptyWhenNothingMatches() {
+        assertThat(reservationRepository.findByPrimaryGuest_IdAndRate_Room_IdAndCheckinDate(GUEST_ID, ROOM_ID, CHECKOUT)).isEmpty();
+        assertThat(reservationRepository.findByPrimaryGuest_IdAndRate_Room_IdAndCheckinDate(GUEST_ID, OTHER_ROOM_ID, CHECKIN)).isEmpty();
+        assertThat(reservationRepository.findByPrimaryGuest_IdAndRate_Room_IdAndCheckinDate(OTHER_GUEST_ID, ROOM_ID, CHECKIN)).isEmpty();
     }
 
     @Test
@@ -205,7 +206,7 @@ class ReservationRepositoryIntegrationTest {
 
         assertThat(reservation.getId()).isEqualTo(RESERVATION_ID);
         assertThat(reservation.getPrimaryGuest().getGuestEmail()).isEqualTo("tom@tomholmes.net");
-        assertThat(reservation.getRoom().getRoomNumber()).isEqualTo(101);
+        assertThat(reservation.getRate().getRoom().getRoomNumber()).isEqualTo(101);
     }
 
     @Test
@@ -214,7 +215,7 @@ class ReservationRepositoryIntegrationTest {
     }
 
     @Test
-    void save_persistsNewReservationForExistingGuestAndRoom() {
+    void save_persistsNewReservationForExistingGuestAndRate() {
         ReservationEntity saved = reservationRepository.saveAndFlush(reservation(NEW_CHECKIN, NEW_CHECKOUT));
 
         assertThat(saved.getId()).isNotNull();
@@ -223,7 +224,7 @@ class ReservationRepositoryIntegrationTest {
 
         ReservationEntity persisted = reservationRepository.findById(saved.getId()).orElseThrow();
         assertThat(persisted.getPrimaryGuest().getId()).isEqualTo(GUEST_ID);
-        assertThat(persisted.getRoom().getId()).isEqualTo(ROOM_ID);
+        assertThat(persisted.getRate().getId()).isEqualTo(RATE_ID);
         assertThat(persisted.getCheckinDate()).isEqualTo(NEW_CHECKIN);
         assertThat(persisted.getCheckoutDate()).isEqualTo(NEW_CHECKOUT);
         assertThat(persisted.getNumberAdults()).isEqualTo(2);
@@ -235,7 +236,7 @@ class ReservationRepositoryIntegrationTest {
     void save_appliesDatabaseDefaults() {
         ReservationEntity reservation = new ReservationEntity();
         reservation.setPrimaryGuest(guest());
-        reservation.setRoom(room());
+        reservation.setRate(rate());
         reservation.setCheckinDate(NEW_CHECKIN);
         reservation.setCheckoutDate(NEW_CHECKOUT);
         reservation.setReservationStatus(status());

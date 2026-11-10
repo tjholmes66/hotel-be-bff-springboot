@@ -30,8 +30,8 @@ public class ReservationServiceTest extends BaseServiceTests
 {
     private static final Long GUEST_ID = 1L;
     private static final Long OTHER_GUEST_ID = 2L;
-    private static final LocalDate CHECKIN = LocalDate.of(2026, 11, 3);
-    private static final LocalDate CHECKOUT = LocalDate.of(2026, 11, 6);
+    private static final LocalDate CHECKIN = LocalDate.of(2026, 11, 13);
+    private static final LocalDate CHECKOUT = LocalDate.of(2026, 11, 15);
     private static final String KEYCLOAK_ID = "3c42807f-f1ac-4baa-9e02-444523b2cfeb";
 
     @Autowired

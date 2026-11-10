@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.tomholmes.opensource.hotel.bff.dto.ReservationRecord;
 import org.tomholmes.opensource.hotel.bff.model.GuestEntity;
+import org.tomholmes.opensource.hotel.bff.model.RateEntity;
 import org.tomholmes.opensource.hotel.bff.model.ReservationEntity;
-import org.tomholmes.opensource.hotel.bff.model.RoomEntity;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,18 +24,18 @@ class ReservationMapperTest
         reservationMapper = Mappers.getMapper(ReservationMapper.class);
     }
 
-    private ReservationEntity reservationEntity(long id, long guestId, long roomId, LocalDate checkinDate)
+    private ReservationEntity reservationEntity(long id, long guestId, long rateId, LocalDate checkinDate)
     {
         GuestEntity guestEntity = new GuestEntity();
         guestEntity.setId(guestId);
 
-        RoomEntity roomEntity = new RoomEntity();
-        roomEntity.setId(roomId);
+        RateEntity rateEntity = new RateEntity();
+        rateEntity.setId(rateId);
 
         ReservationEntity reservationEntity = new ReservationEntity();
         reservationEntity.setId(id);
         reservationEntity.setPrimaryGuest(guestEntity);
-        reservationEntity.setRoom(roomEntity);
+        reservationEntity.setRate(rateEntity);
         reservationEntity.setCheckinDate(checkinDate);
         reservationEntity.setCheckoutDate(checkinDate.plusDays(2));
         reservationEntity.setNumberAdults(2);
@@ -56,7 +56,7 @@ class ReservationMapperTest
         assertThat(reservationRecord).isNotNull();
         assertThat(reservationRecord.id()).isEqualTo(1L);
         assertThat(reservationRecord.primaryGuestId()).isEqualTo(10L);
-        assertThat(reservationRecord.roomId()).isEqualTo(20L);
+        assertThat(reservationRecord.rateId()).isEqualTo(20L);
         assertThat(reservationRecord.checkinDate()).isEqualTo(checkinDate);
         assertThat(reservationRecord.checkoutDate()).isEqualTo(checkinDate.plusDays(2));
         assertThat(reservationRecord.numberAdults()).isEqualTo(2);
@@ -82,7 +82,7 @@ class ReservationMapperTest
         assertThat(reservationRecord).isNotNull();
         assertThat(reservationRecord.id()).isEqualTo(1L);
         assertThat(reservationRecord.primaryGuestId()).isNull();
-        assertThat(reservationRecord.roomId()).isNull();
+        assertThat(reservationRecord.rateId()).isNull();
     }
 
     @Test
@@ -123,7 +123,7 @@ class ReservationMapperTest
         assertThat(reservationEntity).isNotNull();
         assertThat(reservationEntity.getId()).isEqualTo(1L);
         assertThat(reservationEntity.getPrimaryGuest().getId()).isEqualTo(10L);
-        assertThat(reservationEntity.getRoom().getId()).isEqualTo(20L);
+        assertThat(reservationEntity.getRate().getId()).isEqualTo(20L);
         assertThat(reservationEntity.getReservationStatus().getId()).isEqualTo(30L);
         assertThat(reservationEntity.getCheckinDate()).isEqualTo(checkinDate);
         assertThat(reservationEntity.getCheckoutDate()).isEqualTo(checkinDate.plusDays(2));
@@ -144,7 +144,7 @@ class ReservationMapperTest
 
         assertThat(reservationEntity).isNotNull();
         assertThat(reservationEntity.getPrimaryGuest()).isNull();
-        assertThat(reservationEntity.getRoom()).isNull();
+        assertThat(reservationEntity.getRate()).isNull();
         assertThat(reservationEntity.getReservationStatus()).isNull();
     }
 }

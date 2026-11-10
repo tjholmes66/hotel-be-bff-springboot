@@ -4,9 +4,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tomholmes.opensource.hotel.bff.dto.ReservationRecord;
 import org.tomholmes.opensource.hotel.bff.model.GuestEntity;
+import org.tomholmes.opensource.hotel.bff.model.RateEntity;
 import org.tomholmes.opensource.hotel.bff.model.ReservationEntity;
 import org.tomholmes.opensource.hotel.bff.model.ReservationStatusEntity;
-import org.tomholmes.opensource.hotel.bff.model.RoomEntity;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public interface ReservationMapper
 {
     // 1. Single entity mapping rule (MapStruct uses this inside the list loop)
     @Mapping(source = "primaryGuest.id", target = "primaryGuestId")
-    @Mapping(source = "room.id", target = "roomId")
+    @Mapping(source = "rate.id", target = "rateId")
     @Mapping(source = "reservationStatus.id", target = "statusId")
     ReservationRecord toRecord(ReservationEntity reservationEntity);
 
@@ -24,7 +24,7 @@ public interface ReservationMapper
 
     // 3. Reverse mapping: record -> entity (for create/update)
     @Mapping(source = "primaryGuestId", target = "primaryGuest")
-    @Mapping(source = "roomId", target = "room")
+    @Mapping(source = "rateId", target = "rate")
     @Mapping(source = "statusId", target = "reservationStatus")
     ReservationEntity toEntity(ReservationRecord reservationRecord);
 
@@ -41,15 +41,15 @@ public interface ReservationMapper
         return guestEntity;
     }
 
-    default RoomEntity toRoomEntity(Long roomId)
+    default RateEntity toRateEntity(Long rateId)
     {
-        if (roomId == null)
+        if (rateId == null)
         {
             return null;
         }
-        RoomEntity roomEntity = new RoomEntity();
-        roomEntity.setId(roomId);
-        return roomEntity;
+        RateEntity rateEntity = new RateEntity();
+        rateEntity.setId(rateId);
+        return rateEntity;
     }
 
     default ReservationStatusEntity toReservationStatusEntity(Long statusId)

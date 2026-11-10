@@ -17,7 +17,6 @@ import java.util.Objects;
 @DynamicInsert
 public class GuestEntity implements Serializable
 {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -50,14 +49,20 @@ public class GuestEntity implements Serializable
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    public Long getUpdatedBy()
+    @Column(name = "stripe_id")
+    private String stripeId;
+
+    @Column(name = "default_payment_id")
+    private Long defaultPaymentId;
+
+    public LocalDateTime getUpdatedDate()
     {
-        return updatedBy;
+        return updatedDate;
     }
 
-    public void setUpdatedBy(Long updatedBy)
+    public void setUpdatedDate(LocalDateTime updatedDate)
     {
-        this.updatedBy = updatedBy;
+        this.updatedDate = updatedDate;
     }
 
     public Long getId()
@@ -140,14 +145,34 @@ public class GuestEntity implements Serializable
         this.createdDate = createdDate;
     }
 
-    public LocalDateTime getUpdatedDate()
+    public Long getUpdatedBy()
     {
-        return updatedDate;
+        return updatedBy;
     }
 
-    public void setUpdatedDate(LocalDateTime updatedDate)
+    public void setUpdatedBy(Long updatedBy)
     {
-        this.updatedDate = updatedDate;
+        this.updatedBy = updatedBy;
+    }
+
+    public String getStripeId()
+    {
+        return stripeId;
+    }
+
+    public void setStripeId(String stripeId)
+    {
+        this.stripeId = stripeId;
+    }
+
+    public Long getDefaultPaymentId()
+    {
+        return defaultPaymentId;
+    }
+
+    public void setDefaultPaymentId(Long defaultPaymentId)
+    {
+        this.defaultPaymentId = defaultPaymentId;
     }
 
     @Override
@@ -158,18 +183,18 @@ public class GuestEntity implements Serializable
         GuestEntity that = (GuestEntity) o;
         return Objects.equals(id, that.id) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(guestEmail, that.guestEmail) && Objects.equals(
         guestPhone, that.guestPhone) && Objects.equals(guestAdut, that.guestAdut) && Objects.equals(createdBy, that.createdBy) && Objects.equals(createdDate, that.createdDate) && Objects.equals(
-        updatedBy, that.updatedBy) && Objects.equals(updatedDate, that.updatedDate);
+        updatedBy, that.updatedBy) && Objects.equals(updatedDate, that.updatedDate) && Objects.equals(stripeId, that.stripeId) && Objects.equals(defaultPaymentId, that.defaultPaymentId);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, firstName, lastName, guestEmail, guestPhone, guestAdut, createdBy, createdDate, updatedBy, updatedDate);
+        return Objects.hash(id, firstName, lastName, guestEmail, guestPhone, guestAdut, createdBy, createdDate, updatedBy, updatedDate, stripeId, defaultPaymentId);
     }
 
     @Override
     public String toString()
     {
-        return "GuestEntity{" + "id=" + id + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", guestEmail='" + guestEmail + '\'' + ", guestPhone='" + guestPhone + '\'' + ", guestAdut=" + guestAdut + ", createdBy=" + createdBy + ", createdDate=" + createdDate + ", updatedBy=" + updatedBy + ", updatedDate=" + updatedDate + '}';
+        return "GuestEntity{" + "id=" + id + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", guestEmail='" + guestEmail + '\'' + ", guestPhone='" + guestPhone + '\'' + ", guestAdut=" + guestAdut + ", createdBy=" + createdBy + ", createdDate=" + createdDate + ", updatedBy=" + updatedBy + ", updatedDate=" + updatedDate + ", stripeId='" + stripeId + '\'' + ", defaultPaymentId=" + defaultPaymentId + '}';
     }
 }
